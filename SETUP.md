@@ -1,0 +1,224 @@
+# School Management API - Quick Start Guide
+
+## Getting Started with GitHub
+
+### 1. Create a Repository on GitHub
+
+1. Go to https://github.com/new
+2. Fill in the repository details:
+   - **Repository name**: `school-management-system`
+   - **Description**: Comprehensive School Management Web Application (Angular + Node/Express + MySQL)
+   - **Public/Private**: Choose your preference
+   - **Initialize with README**: Leave unchecked (we already have one)
+   - **Add .gitignore**: Select "Node"
+   - Click "Create repository"
+
+### 2. Initialize Git Locally and Push
+
+Open PowerShell in the project root (`d:\Projects\school-pro`):
+
+```powershell
+# Initialize git repository
+git init
+
+# Add all files
+git add .
+
+# Create initial commit
+git commit -m "Initial commit: School Management System setup"
+
+# Add remote repository (replace USERNAME with your GitHub username)
+git remote add origin https://github.com/USERNAME/school-management-system.git
+
+# Rename branch to main (if needed)
+git branch -M main
+
+# Push to GitHub
+git push -u origin main
+```
+
+## Installation & Setup
+
+### Backend Installation
+
+```powershell
+cd backend
+
+# Install dependencies
+npm install
+
+# Copy environment file
+Copy-Item .env.example .env
+
+# Edit .env with your database credentials
+```
+
+### Database Setup
+
+1. Open MySQL and run:
+```sql
+mysql -u root -p < ..\docs\database-schema.sql
+```
+
+2. Or manually create database:
+```sql
+CREATE DATABASE IF NOT EXISTS school_management;
+-- Then run the SQL script
+```
+
+### Start Backend Server
+
+```powershell
+cd backend
+npm run dev
+# Server runs on http://localhost:5000
+```
+
+### Frontend Installation
+
+```powershell
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+# Frontend runs on http://localhost:4200
+```
+
+## Testing the API
+
+### 1. Register/Login
+```powershell
+$body = @{
+    email = "admin@school.com"
+    password = "password"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:5000/api/auth/login" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body $body
+```
+
+### 2. Get Students (with token from login response)
+```powershell
+$headers = @{
+    Authorization = "Bearer YOUR_TOKEN_HERE"
+}
+
+Invoke-RestMethod -Uri "http://localhost:5000/api/students" `
+    -Method GET `
+    -Headers $headers
+```
+
+## Project Structure Overview
+
+```
+school-pro/
+├── backend/
+│   ├── src/
+│   │   ├── models/           # Database models
+│   │   ├── controllers/      # API handlers
+│   │   ├── services/         # Business logic
+│   │   ├── repositories/     # Data access
+│   │   ├── middlewares/      # Auth/validation
+│   │   ├── routes/           # API routes
+│   │   ├── config/           # Configuration
+│   │   └── server.js         # Entry point
+│   ├── package.json
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── services/
+│   │   │   ├── interceptors/
+│   │   │   ├── components/
+│   │   │   └── app.*
+│   │   └── main.ts
+│   └── package.json
+└── docs/
+    └── database-schema.sql
+```
+
+## Key Files
+
+- [Backend Server Setup](../backend/src/server.js)
+- [Student Controller](../backend/src/controllers/student.controller.js)
+- [Student Service](../backend/src/services/student.service.js)
+- [Database Configuration](../backend/src/config/database.js)
+- [Student List Component](../frontend/src/app/components/student-list.component.ts)
+- [Student Service](../frontend/src/app/services/student.service.ts)
+- [Auth Service](../frontend/src/app/services/auth.service.ts)
+- [Auth Interceptor](../frontend/src/app/interceptors/auth.interceptor.ts)
+
+## Features Implemented
+
+✅ **Backend**
+- JWT authentication with role-based access
+- Controller-Service-Repository pattern
+- Sequelize ORM with MySQL
+- Bcrypt password hashing
+- RESTful API endpoints
+- Error handling middleware
+
+✅ **Frontend**
+- Angular 19+ with standalone components
+- Angular Signals for state management
+- Angular Material UI components
+- Auth interceptor for token injection
+- Student list with @for block
+- Role-based UI elements
+
+✅ **Database**
+- Complete schema with relationships
+- Foreign key constraints
+- Timestamp tracking
+- Enum fields for statuses
+- Sample data for testing
+
+## Next Steps
+
+1. **Configure Environment**: Update `.env` files with your credentials
+2. **Set Up Database**: Run the SQL script to create tables
+3. **Install Dependencies**: Run `npm install` in both folders
+4. **Test API**: Use the curl commands above to verify endpoints
+5. **Customize**: Modify components, add more features as needed
+6. **Deploy**: Deploy backend to a service like Heroku or DigitalOcean
+
+## Troubleshooting
+
+### Database Connection Failed
+- Check MySQL is running
+- Verify credentials in `.env`
+- Ensure database name matches in `.env`
+
+### Port Already in Use
+- Backend: Change PORT in `.env`
+- Frontend: Use `ng serve --port 4300`
+
+### CORS Issues
+- Backend CORS is configured for all origins in `server.js`
+- Update as needed for production
+
+### JWT Token Invalid
+- Clear localStorage in browser DevTools
+- Log in again to get new token
+- Check JWT_SECRET matches in `.env`
+
+## Production Checklist
+
+- [ ] Change JWT_SECRET to a strong value
+- [ ] Set NODE_ENV=production
+- [ ] Enable HTTPS
+- [ ] Set up database backups
+- [ ] Configure CORS for specific domains
+- [ ] Enable rate limiting
+- [ ] Set up logging
+- [ ] Test all endpoints
+- [ ] Update environment variables on hosting
+
+## Support
+
+Refer to the main [README.md](../README.md) for more detailed documentation.
