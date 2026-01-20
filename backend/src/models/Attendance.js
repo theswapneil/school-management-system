@@ -1,53 +1,33 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const mongoose = require('mongoose');
 
-const Attendance = sequelize.define(
-  'Attendance',
+const attendanceSchema = new mongoose.Schema(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     studentId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'students',
-        key: 'id',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Student',
+      required: true,
     },
     attendanceDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
+      type: Date,
+      required: true,
     },
     status: {
-      type: DataTypes.ENUM('present', 'absent', 'late', 'excused'),
-      allowNull: false,
+      type: String,
+      enum: ['present', 'absent', 'late', 'excused'],
+      required: true,
     },
-    remarks: {
-      type: DataTypes.TEXT,
-    },
+    remarks: String,
     recordedBy: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id',
-      },
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
   },
   {
-    tableName: 'attendance',
     timestamps: true,
   }
 );
 
-module.exports = Attendance;
+// Index for unique attendance per student per date
+attendanceSchema.index({ studentId: 1, attendanceDate: 1 }, { unique: true });
+
+module.exports = mongoose.model('Attendance', attendanceSchema);

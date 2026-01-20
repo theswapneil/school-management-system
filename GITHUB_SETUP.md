@@ -8,7 +8,7 @@ Your comprehensive School Management System is now fully structured and committe
 
 ### ✅ Backend Architecture (Node.js & Express)
 - **Pattern**: Controller-Service-Repository implemented
-- **Database**: Sequelize ORM configured for MySQL
+- **Database**: MongoDB with Mongoose ODM
 - **Security**: 
   - JWT (JSON Web Tokens) for authentication
   - bcrypt for password hashing
@@ -34,14 +34,14 @@ Your comprehensive School Management System is now fully structured and committe
 - **UI Framework**: Angular Material integration ready
 
 ### ✅ Database Schema
-- **Tables Defined**:
+- **Collections Defined**:
   - `users` - Admin, Teacher, Student, Parent roles
   - `students` - Student records with parent/class relationships
   - `classes` - Class management with teacher assignment
-  - `attendance` - Daily attendance tracking
-  - `fee_transactions` - Fee management
-- **Relationships**: All foreign keys and constraints configured
-- **SQL Script**: Complete CREATE TABLE statements provided
+  - `attendances` - Daily attendance tracking
+  - `feetransactions` - Fee management
+- **Relationships**: All references and indexes configured
+- **MongoDB Schema**: Complete collection validators and indexes provided
 
 ### ✅ File Structure
 
@@ -50,14 +50,14 @@ d:\Projects\school-pro/
 ├── backend/
 │   ├── src/
 │   │   ├── config/
-│   │   │   └── database.js              # Sequelize configuration
+│   │   │   └── database.js              # MongoDB/Mongoose configuration
 │   │   ├── models/
-│   │   │   ├── User.js                  # User model with roles
-│   │   │   ├── Student.js               # Student model
-│   │   │   ├── Class.js                 # Class model
-│   │   │   ├── Attendance.js            # Attendance model
-│   │   │   ├── FeeTransaction.js        # Fee model
-│   │   │   └── index.js                 # Model relationships
+│   │   │   ├── User.js                  # User Mongoose schema
+│   │   │   ├── Student.js               # Student Mongoose schema
+│   │   │   ├── Class.js                 # Class Mongoose schema
+│   │   │   ├── Attendance.js            # Attendance Mongoose schema
+│   │   │   ├── FeeTransaction.js        # Fee Mongoose schema
+│   │   │   └── index.js                 # Models export
 │   │   ├── controllers/
 │   │   │   ├── auth.controller.js       # Login/Register handlers
 │   │   │   └── student.controller.js    # CRUD operations

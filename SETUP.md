@@ -50,20 +50,29 @@ npm install
 # Copy environment file
 Copy-Item .env.example .env
 
-# Edit .env with your database credentials
+# Edit .env with your MongoDB connection string
 ```
 
-### Database Setup
+### MongoDB Setup
 
-1. Open MySQL and run:
-```sql
-mysql -u root -p < ..\docs\database-schema.sql
+#### Option 1: Local MongoDB
+1. Install MongoDB from https://www.mongodb.com/try/download/community
+2. Start MongoDB:
+```powershell
+mongod
 ```
 
-2. Or manually create database:
-```sql
-CREATE DATABASE IF NOT EXISTS school_management;
--- Then run the SQL script
+#### Option 2: Docker
+```powershell
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
+
+#### Option 3: MongoDB Atlas (Cloud)
+1. Go to https://www.mongodb.com/cloud/atlas
+2. Create a free cluster
+3. Get connection string and update `.env`:
+```
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/school_management?retryWrites=true&w=majority
 ```
 
 ### Start Backend Server
@@ -111,35 +120,6 @@ $headers = @{
 Invoke-RestMethod -Uri "http://localhost:5000/api/students" `
     -Method GET `
     -Headers $headers
-```
-
-## Project Structure Overview
-
-```
-school-pro/
-├── backend/
-│   ├── src/
-│   │   ├── models/           # Database models
-│   │   ├── controllers/      # API handlers
-│   │   ├── services/         # Business logic
-│   │   ├── repositories/     # Data access
-│   │   ├── middlewares/      # Auth/validation
-│   │   ├── routes/           # API routes
-│   │   ├── config/           # Configuration
-│   │   └── server.js         # Entry point
-│   ├── package.json
-│   └── .env.example
-├── frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── services/
-│   │   │   ├── interceptors/
-│   │   │   ├── components/
-│   │   │   └── app.*
-│   │   └── main.ts
-│   └── package.json
-└── docs/
-    └── database-schema.sql
 ```
 
 ## Key Files

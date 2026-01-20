@@ -1,51 +1,26 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const mongoose = require('mongoose');
 
-const Class = sequelize.define(
-  'Class',
+const classSchema = new mongoose.Schema(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     name: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
-    section: {
-      type: DataTypes.STRING,
-    },
+    section: String,
     grade: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
     classTeacherId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-    academicYear: {
-      type: DataTypes.STRING,
-    },
-    capacity: {
-      type: DataTypes.INTEGER,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
+    academicYear: String,
+    capacity: Number,
   },
   {
-    tableName: 'classes',
     timestamps: true,
   }
 );
 
-module.exports = Class;
+module.exports = mongoose.model('Class', classSchema);

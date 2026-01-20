@@ -1,97 +1,251 @@
--- School Management Database Schema
--- Create database
-CREATE DATABASE IF NOT EXISTS school_management;
-USE school_management;
+// MongoDB Schema Documentation
+// School Management System Database Collections
 
--- Users table (Admin, Teacher, Student, Parent)
-CREATE TABLE IF NOT EXISTS users (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  firstName VARCHAR(100) NOT NULL,
-  lastName VARCHAR(100) NOT NULL,
-  role ENUM('admin', 'teacher', 'student', 'parent') DEFAULT 'student',
-  phone VARCHAR(15),
-  address TEXT,
-  isActive BOOLEAN DEFAULT true,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX idx_email (email),
-  INDEX idx_role (role)
-);
+// ============================================================================
+// USERS Collection
+// ============================================================================
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["email", "password", "firstName", "lastName", "role"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        email: { 
+          bsonType: "string",
+          description: "User email (unique, lowercase)"
+        },
+        password: { 
+          bsonType: "string",
+          description: "Hashed password (bcrypt)"
+        },
+        firstName: { bsonType: "string" },
+        lastName: { bsonType: "string" },
+        role: { 
+          enum: ["admin", "teacher", "student", "parent"],
+          description: "User role"
+        },
+        phone: { bsonType: "string" },
+        address: { bsonType: "string" },
+        isActive: { 
+          bsonType: "bool",
+          description: "Account status"
+        },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+});
 
--- Classes table
-CREATE TABLE IF NOT EXISTS classes (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  section VARCHAR(50),
-  grade VARCHAR(50) NOT NULL,
-  classTeacherId INT,
-  academicYear VARCHAR(20),
-  capacity INT,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (classTeacherId) REFERENCES users(id) ON DELETE SET NULL,
-  INDEX idx_grade (grade)
-);
+db.users.createIndex({ email: 1 }, { unique: true });
 
--- Students table
-CREATE TABLE IF NOT EXISTS students (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  userId INT NOT NULL UNIQUE,
-  registrationNumber VARCHAR(50) UNIQUE NOT NULL,
-  classId INT NOT NULL,
-  parentId INT,
-  dateOfBirth DATE,
-  enrollmentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-  status ENUM('active', 'inactive', 'graduated') DEFAULT 'active',
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (classId) REFERENCES classes(id) ON DELETE RESTRICT,
-  FOREIGN KEY (parentId) REFERENCES users(id) ON DELETE SET NULL,
-  INDEX idx_registrationNumber (registrationNumber),
-  INDEX idx_classId (classId),
-  INDEX idx_status (status)
-);
+// ============================================================================
+// CLASSES Collection
+// ============================================================================
+db.createCollection("classes", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "grade"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        name: { 
+          bsonType: "string",
+          description: "Class name"
+        },
+        section: { bsonType: "string" },
+        grade: { 
+          bsonType: "string",
+          description: "Grade/Standard"
+        },
+        classTeacherId: { 
+          bsonType: "objectId",
+          description: "Reference to User (Teacher)"
+        },
+        academicYear: { bsonType: "string" },
+        capacity: { bsonType: "int" },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+});
 
--- Attendance table
-CREATE TABLE IF NOT EXISTS attendance (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  studentId INT NOT NULL,
-  attendanceDate DATE NOT NULL,
-  status ENUM('present', 'absent', 'late', 'excused') NOT NULL,
-  remarks TEXT,
-  recordedBy INT,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (studentId) REFERENCES students(id) ON DELETE CASCADE,
-  FOREIGN KEY (recordedBy) REFERENCES users(id) ON DELETE SET NULL,
-  UNIQUE KEY unique_attendance (studentId, attendanceDate),
-  INDEX idx_attendanceDate (attendanceDate),
-  INDEX idx_status (status)
-);
+db.classes.createIndex({ classTeacherId: 1 });
 
--- Fee Transactions table
-CREATE TABLE IF NOT EXISTS fee_transactions (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  studentId INT NOT NULL,
-  academicYear VARCHAR(20) NOT NULL,
-  feeType VARCHAR(100) NOT NULL,
-  amount DECIMAL(10, 2) NOT NULL,
-  status ENUM('pending', 'partial', 'paid') DEFAULT 'pending',
-  dueDate DATE,
-  paidDate DATE,
-  remarks TEXT,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (studentId) REFERENCES students(id) ON DELETE CASCADE,
-  INDEX idx_academicYear (academicYear),
-  INDEX idx_status (status)
-);
+// ============================================================================
+// STUDENTS Collection
+// ============================================================================
+db.createCollection("students", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["userId", "registrationNumber", "classId"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        userId: { 
+          bsonType: "objectId",
+          description: "Reference to User (Student)"
+        },
+        registrationNumber: { 
+          bsonType: "string",
+          description: "Unique registration number"
+        },
+        classId: { 
+          bsonType: "objectId",
+          description: "Reference to Class"
+        },
+        parentId: { 
+          bsonType: "objectId",
+          description: "Reference to User (Parent)"
+        },
+        dateOfBirth: { bsonType: "date" },
+        enrollmentDate: { bsonType: "date" },
+        status: { 
+          enum: ["active", "inactive", "graduated"],
+          description: "Student status"
+        },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+});
 
--- Sample data for testing
-INSERT INTO users (email, password, firstName, lastName, role, phone) VALUES
-('admin@school.com', '$2a$10$K9nL4pW3J5bVzC2R6sQ1JO9X8mK5L3pV2qR1T0sN8vX5wY6aZ7bC', 'Admin', 'User', 'admin', '1234567890'),
-('teacher@school.com', '$2a$10$K9nL4pW3J5bVzC2R6sQ1JO9X8mK5L3pV2qR1T0sN8vX5wY6aZ7bC', 'John', 'Teacher', 'teacher', '1234567891'),
-('parent@school.com', '$2a$10$K9nL4pW3J5bVzC2R6sQ1JO9X8mK5L3pV2qR1T0sN8vX5wY6aZ7bC', 'Jane', 'Parent', 'parent', '1234567892');
+db.students.createIndex({ registrationNumber: 1 }, { unique: true });
+db.students.createIndex({ userId: 1 }, { unique: true });
+db.students.createIndex({ classId: 1 });
+db.students.createIndex({ parentId: 1 });
+db.students.createIndex({ status: 1 });
+
+// ============================================================================
+// ATTENDANCE Collection
+// ============================================================================
+db.createCollection("attendances", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["studentId", "attendanceDate", "status"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        studentId: { 
+          bsonType: "objectId",
+          description: "Reference to Student"
+        },
+        attendanceDate: { 
+          bsonType: "date",
+          description: "Date of attendance"
+        },
+        status: { 
+          enum: ["present", "absent", "late", "excused"],
+          description: "Attendance status"
+        },
+        remarks: { bsonType: "string" },
+        recordedBy: { 
+          bsonType: "objectId",
+          description: "Reference to User (Teacher)"
+        },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+});
+
+db.attendances.createIndex({ studentId: 1, attendanceDate: 1 }, { unique: true });
+db.attendances.createIndex({ attendanceDate: 1 });
+db.attendances.createIndex({ status: 1 });
+
+// ============================================================================
+// FEE_TRANSACTIONS Collection
+// ============================================================================
+db.createCollection("feetransactions", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["studentId", "academicYear", "feeType", "amount"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        studentId: { 
+          bsonType: "objectId",
+          description: "Reference to Student"
+        },
+        academicYear: { 
+          bsonType: "string",
+          description: "Academic year (e.g., 2025-2026)"
+        },
+        feeType: { 
+          bsonType: "string",
+          description: "Type of fee"
+        },
+        amount: { 
+          bsonType: "double",
+          description: "Fee amount"
+        },
+        status: { 
+          enum: ["pending", "partial", "paid"],
+          description: "Payment status"
+        },
+        dueDate: { bsonType: "date" },
+        paidDate: { bsonType: "date" },
+        remarks: { bsonType: "string" },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+});
+
+db.feetransactions.createIndex({ studentId: 1 });
+db.feetransactions.createIndex({ academicYear: 1 });
+db.feetransactions.createIndex({ status: 1 });
+
+// ============================================================================
+// Sample Data (Optional - for testing)
+// ============================================================================
+
+// Create sample users
+db.users.insertMany([
+  {
+    email: "admin@school.com",
+    password: "$2a$10$K9nL4pW3J5bVzC2R6sQ1JO9X8mK5L3pV2qR1T0sN8vX5wY6aZ7bC", // hashed: password
+    firstName: "Admin",
+    lastName: "User",
+    role: "admin",
+    phone: "1234567890",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    email: "teacher@school.com",
+    password: "$2a$10$K9nL4pW3J5bVzC2R6sQ1JO9X8mK5L3pV2qR1T0sN8vX5wY6aZ7bC",
+    firstName: "John",
+    lastName: "Teacher",
+    role: "teacher",
+    phone: "1234567891",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    email: "parent@school.com",
+    password: "$2a$10$K9nL4pW3J5bVzC2R6sQ1JO9X8mK5L3pV2qR1T0sN8vX5wY6aZ7bC",
+    firstName: "Jane",
+    lastName: "Parent",
+    role: "parent",
+    phone: "1234567892",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+]);
+
+// ============================================================================
+// MongoDB Connection String Format
+// ============================================================================
+// Development: mongodb://localhost:27017/school_management
+// With Authentication: mongodb://username:password@host:port/school_management
+// MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/school_management?retryWrites=true&w=majority
+

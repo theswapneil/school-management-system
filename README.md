@@ -124,22 +124,22 @@ npm install
 cp .env.example .env
 ```
 
-4. Update `.env` with your database credentials:
+4. Update `.env` with your MongoDB connection string:
 ```
 NODE_ENV=development
 PORT=5000
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=school_management
-DB_USER=root
-DB_PASSWORD=your_password
+MONGODB_URI=mongodb://localhost:27017/school_management
 JWT_SECRET=your_secret_key_here
 JWT_EXPIRY=7d
 ```
 
-5. Create the database:
+5. Start MongoDB:
 ```bash
-mysql -u root -p < ../docs/database-schema.sql
+# If using MongoDB locally
+mongod
+
+# Or if using Docker
+docker run -d -p 27017:27017 --name mongodb mongo:latest
 ```
 
 6. Start the server:
@@ -170,53 +170,53 @@ The frontend will run on `http://localhost:4200`
 
 ## Database Schema
 
-### Tables
+### Collections
 
 #### users
-- id (PK)
-- email (unique)
-- password (hashed)
+- _id (ObjectId, PK)
+- email (unique, indexed)
+- password (hashed with bcrypt)
 - firstName, lastName
-- role (enum: admin, teacher, student, parent)
+- role (admin, teacher, student, parent)
 - phone, address
 - isActive
 - timestamps
 
 #### classes
-- id (PK)
+- _id (ObjectId, PK)
 - name, section, grade
-- classTeacherId (FK → users)
+- classTeacherId (ObjectId → users)
 - academicYear, capacity
 - timestamps
 
 #### students
-- id (PK)
-- userId (FK → users, unique)
-- registrationNumber (unique)
-- classId (FK → classes)
-- parentId (FK → users)
+- _id (ObjectId, PK)
+- userId (ObjectId → users, unique)
+- registrationNumber (unique, indexed)
+- classId (ObjectId → classes)
+- parentId (ObjectId → users)
 - dateOfBirth
 - enrollmentDate
-- status (enum: active, inactive, graduated)
+- status (active, inactive, graduated)
 - timestamps
 
-#### attendance
-- id (PK)
-- studentId (FK → students)
+#### attendances
+- _id (ObjectId, PK)
+- studentId (ObjectId → students)
 - attendanceDate
-- status (enum: present, absent, late, excused)
+- status (present, absent, late, excused)
 - remarks
-- recordedBy (FK → users)
-- unique constraint on (studentId, attendanceDate)
+- recordedBy (ObjectId → users)
+- unique index on (studentId, attendanceDate)
 - timestamps
 
-#### fee_transactions
-- id (PK)
-- studentId (FK → students)
+#### feetransactions
+- _id (ObjectId, PK)
+- studentId (ObjectId → students)
 - academicYear
 - feeType
-- amount (decimal)
-- status (enum: pending, partial, paid)
+- amount (number)
+- status (pending, partial, paid)
 - dueDate, paidDate
 - remarks
 - timestamps
@@ -315,13 +315,14 @@ Components use standalone flag and can be imported directly. Use Angular Materia
 ```
 NODE_ENV=development|production
 PORT=5000
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=school_management
-DB_USER=root
-DB_PASSWORD=your_password
+MONGODB_URI=mongodb://localhost:27017/school_management
 JWT_SECRET=your_secret_key_here
 JWT_EXPIRY=7d
+```
+
+For MongoDB Atlas, use:
+```
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/school_management?retryWrites=true&w=majority
 ```
 
 ## Contributing

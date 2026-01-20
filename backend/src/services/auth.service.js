@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
 
 class AuthService {
   async hashPassword(password) {
@@ -14,7 +13,7 @@ class AuthService {
   generateToken(user) {
     return jwt.sign(
       {
-        id: user.id,
+        id: user._id,
         email: user.email,
         role: user.role,
         firstName: user.firstName,

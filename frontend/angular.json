@@ -20,7 +20,6 @@
             "outputPath": "dist/school-management",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
@@ -70,5 +69,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "4b6087e1-0549-4dd2-9645-2a97add5b0d2"
   }
 }

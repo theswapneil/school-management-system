@@ -1,60 +1,36 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const mongoose = require('mongoose');
 
-const FeeTransaction = sequelize.define(
-  'FeeTransaction',
+const feeTransactionSchema = new mongoose.Schema(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     studentId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'students',
-        key: 'id',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Student',
+      required: true,
     },
     academicYear: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
     feeType: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
     amount: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
+      type: Number,
+      required: true,
     },
     status: {
-      type: DataTypes.ENUM('pending', 'partial', 'paid'),
-      defaultValue: 'pending',
+      type: String,
+      enum: ['pending', 'partial', 'paid'],
+      default: 'pending',
     },
-    dueDate: {
-      type: DataTypes.DATE,
-    },
-    paidDate: {
-      type: DataTypes.DATE,
-    },
-    remarks: {
-      type: DataTypes.TEXT,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
+    dueDate: Date,
+    paidDate: Date,
+    remarks: String,
   },
   {
-    tableName: 'fee_transactions',
     timestamps: true,
   }
 );
 
-module.exports = FeeTransaction;
+module.exports = mongoose.model('FeeTransaction', feeTransactionSchema);

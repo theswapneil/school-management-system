@@ -2,55 +2,41 @@ const { Student, User, Class } = require('../models');
 
 class StudentRepository {
   async findAll(filters = {}) {
-    const where = {};
-    if (filters.status) where.status = filters.status;
-    if (filters.classId) where.classId = filters.classId;
+    const query = {};
+    if (filters.status) query.status = filters.status;
+    if (filters.classId) query.classId = filters.classId;
 
-    return Student.findAll({
-      where,
-      include: [
-        { model: User, as: 'user', attributes: ['id', 'firstName', 'lastName', 'email'] },
-        { model: User, as: 'parent', attributes: ['id', 'firstName', 'lastName', 'email'] },
-        { model: Class, as: 'class', attributes: ['id', 'name', 'grade'] },
-      ],
-      order: [['id', 'DESC']],
-    });
+    return Student.find(query)
+      .populate('userId', 'firstName lastName email')
+      .populate('parentId', 'firstName lastName email')
+      .populate('classId', 'name grade')
+      .sort({ createdAt: -1 });
   }
 
   async findById(id) {
-    return Student.findByPk(id, {
-      include: [
-        { model: User, as: 'user', attributes: ['id', 'firstName', 'lastName', 'email', 'phone'] },
-        { model: User, as: 'parent', attributes: ['id', 'firstName', 'lastName', 'email', 'phone'] },
-        { model: Class, as: 'class' },
-      ],
-    });
+    return Student.findById(id)
+      .populate('userId', 'firstName lastName email phone')
+      .populate('parentId', 'firstName lastName email phone')
+      .populate('classId');
   }
 
   async create(studentData) {
-    return Student.create(studentData);
+    const student = new Student(studentData);
+    return student.save();
   }
 
   async update(id, studentData) {
-    const student = await Student.findByPk(id);
-    if (!student) throw new Error('Student not found');
-    return student.update(studentData);
+    return Student.findByIdAndUpdate(id, studentData, { new: true });
   }
 
   async delete(id) {
-    const student = await Student.findByPk(id);
-    if (!student) throw new Error('Student not found');
-    return student.destroy();
+    return Student.findByIdAndDelete(id);
   }
 
   async findByRegistrationNumber(registrationNumber) {
-    return Student.findOne({
-      where: { registrationNumber },
-      include: [
-        { model: User, as: 'user' },
-        { model: Class, as: 'class' },
-      ],
-    });
+    return Student.findOne({ registrationNumber })
+      .populate('userId')
+      .populate('classId');
   }
 }
 

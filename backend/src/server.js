@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./config/database');
+const connectDB = require('./config/database');
 const authRoutes = require('./routes/auth.routes');
 const studentRoutes = require('./routes/student.routes');
 
@@ -30,19 +30,12 @@ app.use((err, req, res, next) => {
 // Database connection and server start
 const PORT = process.env.PORT || 5000;
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Database connected successfully');
-    return sequelize.sync({ alter: true });
-  })
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.error('Unable to connect to the database:', error);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
+}).catch((error) => {
+  console.error('Failed to start server:', error);
+});
 
 module.exports = app;

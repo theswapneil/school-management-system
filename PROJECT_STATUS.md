@@ -67,20 +67,20 @@ school-pro/
 │   ├── SETUP.md                      ← Installation guide
 │   ├── GITHUB_SETUP.md              ← GitHub instructions
 │   └── docs/
-│       └── database-schema.sql       ← MySQL schema
+│       └── database-schema.sql       ← MongoDB schema documentation
 │
-├── 🔙 BACKEND (Node.js + Express)
+├── 🔙 BACKEND (Node.js + Express + MongoDB)
 │   └── backend/
 │       ├── src/
 │       │   ├── config/
-│       │   │   └── database.js       ← Sequelize setup
-│       │   ├── models/               ← 5 data models
-│       │   │   ├── User.js           ← User with roles
+│       │   │   └── database.js       ← MongoDB/Mongoose connection
+│       │   ├── models/               ← 5 Mongoose schemas
+│       │   │   ├── User.js           ← User schema with roles
 │       │   │   ├── Student.js        ← Student records
 │       │   │   ├── Class.js          ← Classes
 │       │   │   ├── Attendance.js     ← Attendance tracking
 │       │   │   ├── FeeTransaction.js ← Fee management
-│       │   │   └── index.js          ← Relationships
+│       │   │   └── index.js          ← Models export
 │       │   ├── controllers/          ← Request handlers
 │       │   │   ├── auth.controller.js
 │       │   │   └── student.controller.js
@@ -197,7 +197,7 @@ DELETE /api/students/:id            → Delete student (Admin)
 | Backend Architecture | ✅ | Controller-Service-Repository |
 | Authentication | ✅ | JWT + bcrypt |
 | Authorization | ✅ | Role-based access control |
-| Database | ✅ | 5 tables with relationships |
+| Database | ✅ | MongoDB with Mongoose schemas |
 | Frontend State | ✅ | Angular Signals |
 | HTTP Interceptor | ✅ | JWT token injection |
 | UI Components | ✅ | Material + @for block |

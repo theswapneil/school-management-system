@@ -1,62 +1,41 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const mongoose = require('mongoose');
 
-const User = sequelize.define(
-  'User',
+const userSchema = new mongoose.Schema(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     email: {
-      type: DataTypes.STRING,
+      type: String,
       unique: true,
-      allowNull: false,
-      validate: {
-        isEmail: true,
-      },
+      required: true,
+      lowercase: true,
+      match: /.+\@.+\..+/,
     },
     password: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
     firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
     lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
     role: {
-      type: DataTypes.ENUM('admin', 'teacher', 'student', 'parent'),
-      defaultValue: 'student',
-      allowNull: false,
+      type: String,
+      enum: ['admin', 'teacher', 'student', 'parent'],
+      default: 'student',
     },
-    phone: {
-      type: DataTypes.STRING,
-    },
-    address: {
-      type: DataTypes.TEXT,
-    },
+    phone: String,
+    address: String,
     isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      type: Boolean,
+      default: true,
     },
   },
   {
-    tableName: 'users',
     timestamps: true,
   }
 );
 
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

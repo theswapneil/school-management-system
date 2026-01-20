@@ -1,66 +1,40 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const mongoose = require('mongoose');
 
-const Student = sequelize.define(
-  'Student',
+const studentSchema = new mongoose.Schema(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'users',
-        key: 'id',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
     registrationNumber: {
-      type: DataTypes.STRING,
+      type: String,
       unique: true,
-      allowNull: false,
+      required: true,
     },
     classId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'classes',
-        key: 'id',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Class',
+      required: true,
     },
     parentId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-    dateOfBirth: {
-      type: DataTypes.DATE,
-    },
+    dateOfBirth: Date,
     enrollmentDate: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      type: Date,
+      default: Date.now,
     },
     status: {
-      type: DataTypes.ENUM('active', 'inactive', 'graduated'),
-      defaultValue: 'active',
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      type: String,
+      enum: ['active', 'inactive', 'graduated'],
+      default: 'active',
     },
   },
   {
-    tableName: 'students',
     timestamps: true,
   }
 );
 
-module.exports = Student;
+module.exports = mongoose.model('Student', studentSchema);

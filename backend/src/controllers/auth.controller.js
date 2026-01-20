@@ -10,7 +10,7 @@ class AuthController {
         return res.status(400).json({ message: 'Email and password required' });
       }
 
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ email: email.toLowerCase() });
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -26,7 +26,7 @@ class AuthController {
         message: 'Login successful',
         token,
         user: {
-          id: user.id,
+          id: user._id,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
@@ -46,7 +46,7 @@ class AuthController {
         return res.status(400).json({ message: 'All fields are required' });
       }
 
-      const existingUser = await User.findOne({ where: { email } });
+      const existingUser = await User.findOne({ email: email.toLowerCase() });
       if (existingUser) {
         return res.status(409).json({ message: 'Email already registered' });
       }
@@ -54,7 +54,7 @@ class AuthController {
       const hashedPassword = await authService.hashPassword(password);
 
       const user = await User.create({
-        email,
+        email: email.toLowerCase(),
         password: hashedPassword,
         firstName,
         lastName,
@@ -67,7 +67,7 @@ class AuthController {
         message: 'User registered successfully',
         token,
         user: {
-          id: user.id,
+          id: user._id,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
