@@ -1,14 +1,17 @@
 <mat-toolbar color="primary" class="toolbar">
-  <span>School Management System</span>
+  <span class="app-title">🏫 School Management System</span>
   <span class="spacer"></span>
   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="User menu">
     <mat-icon>account_circle</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item disabled>{{ currentUser()?.email }}</button>
+    <button mat-menu-item disabled>
+      <mat-icon>person</mat-icon>
+      <span>{{ currentUser()?.email }}</span>
+    </button>
     <button mat-menu-item [disabled]="!currentUser()">
       <mat-icon>badge</mat-icon>
-      <span>Role: {{ userRole() }}</span>
+      <span>Role: {{ userRole() | uppercase }}</span>
     </button>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="onLogout()">
@@ -19,56 +22,77 @@
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav class="sidebar">
-    <h2>MENU</h2>
+  <mat-sidenav #sidenav class="sidebar" mode="side" [opened]="true">
+    <div class="sidebar-header">
+      <h2>Navigation</h2>
+    </div>
+    
     <mat-nav-list>
-      <mat-list-item [class.active]="false" (click)="navigateTo('/dashboard')">
+      <mat-list-item class="nav-item" (click)="navigateTo('/dashboard')" routerLinkActive="active">
         <mat-icon matListItemIcon>dashboard</mat-icon>
         <span matListItemTitle>Dashboard</span>
       </mat-list-item>
 
       <mat-list-item
-        [class.active]="false"
+        class="nav-item"
         *ngIf="userRole() === 'admin' || userRole() === 'teacher'"
-        (click)="navigateTo('/students')"
+        (click)="navigateTo('/dashboard/students')"
+        routerLinkActive="active"
       >
         <mat-icon matListItemIcon>people</mat-icon>
         <span matListItemTitle>Students</span>
       </mat-list-item>
 
       <mat-list-item
-        [class.active]="false"
+        class="nav-item"
+        *ngIf="userRole() === 'admin' || userRole() === 'teacher' || userRole() === 'parent'"
+        (click)="navigateTo('/dashboard/fees')"
+        routerLinkActive="active"
+      >
+        <mat-icon matListItemIcon>receipt</mat-icon>
+        <span matListItemTitle>Fees</span>
+      </mat-list-item>
+
+      <mat-list-item
+        class="nav-item"
         *ngIf="userRole() === 'admin'"
-        (click)="navigateTo('/classes')"
+        (click)="navigateTo('/dashboard/classes')"
+        routerLinkActive="active"
       >
         <mat-icon matListItemIcon>class</mat-icon>
         <span matListItemTitle>Classes</span>
       </mat-list-item>
 
       <mat-list-item
-        [class.active]="false"
+        class="nav-item"
         *ngIf="userRole() === 'admin'"
-        (click)="navigateTo('/users')"
+        (click)="navigateTo('/dashboard/users')"
+        routerLinkActive="active"
       >
         <mat-icon matListItemIcon>person</mat-icon>
         <span matListItemTitle>Users</span>
       </mat-list-item>
 
       <mat-list-item
-        [class.active]="false"
+        class="nav-item"
         *ngIf="userRole() === 'admin'"
-        (click)="navigateTo('/reports')"
+        (click)="navigateTo('/dashboard/reports')"
+        routerLinkActive="active"
       >
         <mat-icon matListItemIcon>assessment</mat-icon>
         <span matListItemTitle>Reports</span>
+      </mat-list-item>
+
+      <mat-divider></mat-divider>
+
+      <mat-list-item class="nav-item logout-item" (click)="onLogout()">
+        <mat-icon matListItemIcon>logout</mat-icon>
+        <span matListItemTitle>Logout</span>
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
 
   <div class="main-content">
-    <div class="content-wrapper">
-      <h1>Welcome, {{ currentUser()?.email }}</h1>
-      <p>Role: {{ userRole() }}</p>
-    </div>
+    <router-outlet></router-outlet>
   </div>
 </mat-sidenav-container>

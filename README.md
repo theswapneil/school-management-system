@@ -42,8 +42,8 @@ school-pro/
 ### Backend
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Database**: MySQL
-- **ORM**: Sequelize
+- **Database**: MongoDB
+- **ODM**: Mongoose
 - **Authentication**: JWT (JSON Web Tokens)
 - **Password Hashing**: bcryptjs
 
@@ -104,7 +104,7 @@ school-pro/
 
 ### Prerequisites
 - Node.js (v16+)
-- MySQL (v5.7+)
+- MongoDB (local or MongoDB Atlas cloud account)
 - npm or yarn
 
 ### Backend Setup
@@ -133,21 +133,58 @@ JWT_SECRET=your_secret_key_here
 JWT_EXPIRY=7d
 ```
 
-5. Start MongoDB:
-```bash
-# If using MongoDB locally
-mongod
+For MongoDB Atlas (cloud):
+```
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/school_management?retryWrites=true&w=majority
+```
 
-# Or if using Docker
+5. Initialize the database (creates collections and indexes):
+```bash
+node src/setup.js
+```
+
+Output should confirm all 5 collections are created:
+```
+Users collection exists
+Classes collection exists
+Students collection exists
+Attendances collection exists
+FeeTransactions collection exists
+Database setup completed!
+```
+
+6. Start MongoDB (if using local):
+```bash
+mongod
+```
+
+Or with Docker:
+```bash
 docker run -d -p 27017:27017 --name mongodb mongo:latest
 ```
 
-6. Start the server:
+7. Start the backend server:
 ```bash
 npm run dev
 ```
 
 The backend will run on `http://localhost:5000`
+
+### Database Setup Details
+
+The `src/setup.js` script initializes MongoDB with:
+
+**Collections Created:**
+- **users** - User accounts (admin, teacher, student, parent roles)
+- **classes** - Class information and academic details
+- **students** - Student enrollment records (linked to users)
+- **attendances** - Daily attendance tracking
+- **feetransactions** - Fee payment records
+
+**Indexes Created:**
+- Unique index on `users.email`
+- Unique index on `students.registrationNumber`
+- Compound unique index on `attendances.(studentId, attendanceDate)`
 
 ### Frontend Setup
 

@@ -75,6 +75,41 @@ docker run -d -p 27017:27017 --name mongodb mongo:latest
 MONGODB_URI=mongodb+srv://mymongo:mypass@cluster.mongodb.net/school_management?retryWrites=true&w=majority
 ```
 
+### Initialize Database Collections
+
+After setting up MongoDB, initialize the database with required collections and indexes:
+
+```powershell
+cd backend
+
+# Create collections and indexes
+node src/setup.js
+
+# Output should show:
+# Users collection exists
+# Classes collection exists
+# Students collection exists
+# Attendances collection exists
+# FeeTransactions collection exists
+# Database setup completed!
+```
+
+**About src/setup.js:**
+- **Location**: `backend/src/setup.js`
+- **Purpose**: Initializes MongoDB database with all required collections and indexes
+- **Collections Created**:
+  - `users` - User accounts (admin, teacher, student, parent)
+  - `classes` - Class information and academic details
+  - `students` - Student enrollment records linked to users
+  - `attendances` - Daily attendance tracking
+  - `feetransactions` - Fee payment and transaction records
+- **Indexes Created**:
+  - Unique index on `users.email`
+  - Unique index on `students.registrationNumber`
+  - Compound unique index on `attendances.(studentId, attendanceDate)`
+- **Usage**: Run once during setup or anytime to verify collections exist
+- **Safety**: Idempotent - safe to run multiple times without duplicating data
+
 ### Start Backend Server
 
 ```powershell

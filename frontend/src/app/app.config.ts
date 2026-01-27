@@ -8,10 +8,11 @@ import { LoginComponent } from './components/login.component';
 import { RegisterComponent } from './components/register.component';
 import { DashboardComponent } from './components/dashboard.component';
 import { StudentListComponent } from './components/student-list.component';
+import { FeesComponent } from './components/fees.component';
 import { Routes } from '@angular/router';
 import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 
-const routes:Routes = [
+const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -22,6 +23,7 @@ const routes:Routes = [
     children: [
       { path: '', component: StudentListComponent },
       { path: 'students', component: StudentListComponent, data: { roles: ['admin', 'teacher'] } },
+      { path: 'fees', component: FeesComponent, data: { roles: ['admin', 'teacher', 'parent'] } },
     ],
   },
   { path: '**', redirectTo: '/login' },

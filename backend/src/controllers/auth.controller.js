@@ -1,5 +1,5 @@
 const authService = require('../services/auth.service');
-const { User } = require('../models');
+const User = require('../models/User');
 
 class AuthController {
   async login(req, res) {
@@ -34,6 +34,7 @@ class AuthController {
         },
       });
     } catch (error) {
+      console.error('Login error:', error);
       return res.status(500).json({ message: 'Login error', error: error.message });
     }
   }
@@ -75,6 +76,7 @@ class AuthController {
         },
       });
     } catch (error) {
+      console.error('Registration error:', error);
       return res.status(500).json({ message: 'Registration error', error: error.message });
     }
   }

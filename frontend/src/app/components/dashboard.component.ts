@@ -8,7 +8,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { StudentListComponent } from './student-list.component';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -16,6 +15,8 @@ import { AuthService } from '../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
+    RouterOutlet,
+    RouterLinkActive,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,

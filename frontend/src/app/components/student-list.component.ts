@@ -5,8 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { StudentService, Student } from '../services/student.service';
 import { AuthService } from '../services/auth.service';
+import { StudentFormComponent } from './student-form.component';
 
 @Component({
   selector: 'app-student-list',
@@ -18,6 +23,10 @@ import { AuthService } from '../services/auth.service';
     MatCardModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatDialogModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
   ],
   templateUrl: './student-list.component.html',
   styleUrl: './student-list.component.scss',
@@ -26,10 +35,12 @@ export class StudentListComponent implements OnInit {
   private studentService = inject(StudentService);
   private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   students = signal<Student[]>([]);
   isLoading = signal(false);
   displayedColumns = ['registrationNumber', 'studentName', 'email', 'class', 'status', 'actions'];
+  userRole = this.authService.userRole;
 
   ngOnInit(): void {
     this.loadStudents();
@@ -50,14 +61,36 @@ export class StudentListComponent implements OnInit {
     });
   }
 
-  editStudent(id: number): void {
-    // Navigate to edit page
-    console.log('Edit student:', id);
+  openAddStudentDialog(): void {
+    const dialogRef = this.dialog.open(StudentFormComponent, {
+      width: '600px',
+      disableClose: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadStudents();
+      }
+    });
   }
 
-  deleteStudent(id: number): void {
-    if (confirm('Are you sure you want to delete this student?')) {
-      this.studentService.deleteStudent(id).subscribe({
+  openEditStudentDialog(student: Student): void {
+    const dialogRef = this.dialog.open(StudentFormComponent, {
+      width: '600px',
+      disableClose: false,
+      data: { student },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadStudents();
+      }
+    });
+  }
+
+  deleteStudent(student: Student): void {
+    if (confirm(`Are you sure you want to delete ${student.user?.firstName} ${student.user?.lastName}?`)) {
+      this.studentService.deleteStudent(student.id).subscribe({
         next: () => {
           this.snackBar.open('Student deleted successfully', 'Close', { duration: 3000 });
           this.loadStudents();
@@ -68,6 +101,24 @@ export class StudentListComponent implements OnInit {
         },
       });
     }
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'active':
+        return 'success';
+      case 'inactive':
+        return 'warning';
+      case 'graduated':
+        return 'info';
+      default:
+        return '';
+    }
+  }
+
+  isAdminOrTeacher(): boolean {
+    const role = this.userRole();
+    return role === 'admin' || role === 'teacher';
   }
 
   canCreateStudent(): boolean {
