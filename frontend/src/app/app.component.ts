@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { StudentListComponent } from './components/student-list.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, StudentListComponent],
+  imports: [CommonModule, StudentListComponent],
   template: `
     <div class="app-container">
       <header class="app-header">

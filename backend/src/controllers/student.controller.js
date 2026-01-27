@@ -2,18 +2,21 @@ const studentService = require('../services/student.service');
 
 class StudentController {
   async getAllStudents(req, res) {
+    console.log('here getStudents');
     try {
       const filters = {
         status: req.query.status,
         classId: req.query.classId,
       };
 
+      console.log('success', res);
       const students = await studentService.getAllStudents(filters);
       return res.status(200).json({
         message: 'Students retrieved successfully',
         data: students,
       });
     } catch (error) {
+        console.log('error', error);
       return res.status(500).json({ message: 'Error fetching students', error: error.message });
     }
   }

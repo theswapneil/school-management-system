@@ -6,7 +6,7 @@ const roleMiddleware = require('../middlewares/role.middleware');
 
 router.get(
   '/',
-  authMiddleware,
+//   authMiddleware,
   (req, res) => studentController.getAllStudents(req, res)
 );
 

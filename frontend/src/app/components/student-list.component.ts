@@ -22,7 +22,7 @@ import { AuthService } from '../services/auth.service';
   template: `
     <div class="container">
       <div class="header">
-        <h1>Students List</h1>
+        <h1>Students List 1</h1>
         <button mat-raised-button color="primary" *ngIf="canCreateStudent()">
           Add New Student
         </button>
