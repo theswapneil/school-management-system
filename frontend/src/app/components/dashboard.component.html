@@ -1,0 +1,74 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span>School Management System</span>
+  <span class="spacer"></span>
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="User menu">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item disabled>{{ currentUser()?.email }}</button>
+    <button mat-menu-item [disabled]="!currentUser()">
+      <mat-icon>badge</mat-icon>
+      <span>Role: {{ userRole() }}</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="onLogout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav class="sidebar">
+    <h2>MENU</h2>
+    <mat-nav-list>
+      <mat-list-item [class.active]="false" (click)="navigateTo('/dashboard')">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </mat-list-item>
+
+      <mat-list-item
+        [class.active]="false"
+        *ngIf="userRole() === 'admin' || userRole() === 'teacher'"
+        (click)="navigateTo('/students')"
+      >
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Students</span>
+      </mat-list-item>
+
+      <mat-list-item
+        [class.active]="false"
+        *ngIf="userRole() === 'admin'"
+        (click)="navigateTo('/classes')"
+      >
+        <mat-icon matListItemIcon>class</mat-icon>
+        <span matListItemTitle>Classes</span>
+      </mat-list-item>
+
+      <mat-list-item
+        [class.active]="false"
+        *ngIf="userRole() === 'admin'"
+        (click)="navigateTo('/users')"
+      >
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Users</span>
+      </mat-list-item>
+
+      <mat-list-item
+        [class.active]="false"
+        *ngIf="userRole() === 'admin'"
+        (click)="navigateTo('/reports')"
+      >
+        <mat-icon matListItemIcon>assessment</mat-icon>
+        <span matListItemTitle>Reports</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <div class="main-content">
+    <div class="content-wrapper">
+      <h1>Welcome, {{ currentUser()?.email }}</h1>
+      <p>Role: {{ userRole() }}</p>
+    </div>
+  </div>
+</mat-sidenav-container>

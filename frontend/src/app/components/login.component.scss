@@ -1,0 +1,114 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+::ng-deep mat-card-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+::ng-deep mat-card-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+::ng-deep mat-card-subtitle {
+  color: #999;
+  font-size: 14px;
+}
+
+::ng-deep mat-card-content {
+  padding: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.login-button {
+  height: 45px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.demo-section {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+  border-left: 4px solid #667eea;
+}
+
+.demo-title {
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 13px;
+}
+
+.demo-credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.credential-item {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+
+  strong {
+    color: #333;
+  }
+}
+
+.register-section {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+.register-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+::ng-deep mat-spinner {
+  margin: 0 auto;
+}
