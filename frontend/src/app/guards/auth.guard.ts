@@ -12,11 +12,11 @@ export class AuthGuard {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (this.authService.isLoggedIn()) {
       // Check if route requires specific roles
-      const requiredRoles = route.data['roles'] as string[];
-      if (requiredRoles && !this.authService.hasRole(requiredRoles)) {
-        this.router.navigate(['/dashboard']);
-        return false;
-      }
+      // const requiredRoles = route.data['roles'] as string[];
+      // if (requiredRoles && !this.authService.hasRole(requiredRoles)) {
+      //   this.router.navigate(['/dashboard']);
+      //   return false;
+      // }
       return true;
     }
 

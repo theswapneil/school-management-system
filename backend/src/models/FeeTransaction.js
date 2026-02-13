@@ -27,6 +27,10 @@ const feeTransactionSchema = new mongoose.Schema(
     dueDate: Date,
     paidDate: Date,
     remarks: String,
+    createdById: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

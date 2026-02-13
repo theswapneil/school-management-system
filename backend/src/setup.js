@@ -78,6 +78,45 @@ async function hashPassword(password) {
   return bcrypt.hash(password, 10);
 }
 
+/**
+ * Initial classes to be created
+ */
+const initialClasses = [
+  { name: 'Class 1', section: 'A', grade: '1', academicYear: '2024-2025', capacity: 40 },
+  { name: 'Class 1', section: 'B', grade: '1', academicYear: '2024-2025', capacity: 40 },
+  { name: 'Class 2', section: 'A', grade: '2', academicYear: '2024-2025', capacity: 40 },
+  { name: 'Class 2', section: 'B', grade: '2', academicYear: '2024-2025', capacity: 40 },
+  { name: 'Class 3', section: 'A', grade: '3', academicYear: '2024-2025', capacity: 40 },
+  { name: 'Class 4', section: 'A', grade: '4', academicYear: '2024-2025', capacity: 40 },
+  { name: 'Class 5', section: 'A', grade: '5', academicYear: '2024-2025', capacity: 45 },
+  { name: 'Class 6', section: 'A', grade: '6', academicYear: '2024-2025', capacity: 45 },
+  { name: 'Class 7', section: 'A', grade: '7', academicYear: '2024-2025', capacity: 45 },
+  { name: 'Class 8', section: 'A', grade: '8', academicYear: '2024-2025', capacity: 45 },
+  { name: 'Class 9', section: 'A', grade: '9', academicYear: '2024-2025', capacity: 45 },
+  { name: 'Class 10', section: 'A', grade: '10', academicYear: '2024-2025', capacity: 45 },
+];
+
+async function insertInitialClasses(classesCollection) {
+  console.log('\n--- Inserting Initial Classes ---');
+  
+  for (const classData of initialClasses) {
+    const existingClass = await classesCollection.findOne({ name: classData.name, section: classData.section });
+    
+    if (existingClass) {
+      console.log(`✓ Class ${classData.name} (${classData.section}) already exists`);
+    } else {
+      const newClass = {
+        ...classData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      
+      await classesCollection.insertOne(newClass);
+      console.log(`✓ Created class: ${classData.name} ${classData.section} (Grade ${classData.grade})`);
+    }
+  }
+}
+
 async function insertInitialUsers(usersCollection) {
   console.log('\n--- Inserting Initial Users ---');
   
@@ -120,8 +159,9 @@ async function setupDatabase() {
     await db.collection('students').createIndex({ registrationNumber: 1 }, { unique: true }).catch(() => {});
     await db.collection('attendances').createIndex({ studentId: 1, attendanceDate: 1 }, { unique: true }).catch(() => {});
     
-    // Insert initial users
+    // Insert initial users and classes
     await insertInitialUsers(db.collection('users'));
+    await insertInitialClasses(db.collection('classes'));
     
     console.log('\n✓ Database setup completed successfully!');
     console.log('\n--- Test Credentials ---');

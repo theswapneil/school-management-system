@@ -17,10 +17,6 @@ const studentSchema = new mongoose.Schema(
       ref: 'Class',
       required: true,
     },
-    parentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
     dateOfBirth: Date,
     enrollmentDate: {
       type: Date,
@@ -30,6 +26,13 @@ const studentSchema = new mongoose.Schema(
       type: String,
       enum: ['active', 'inactive', 'graduated'],
       default: 'active',
+    },
+    phone: String,
+    address: String,
+    createdById: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
   },
   {

@@ -11,11 +11,13 @@ import { StudentListComponent } from './components/student-list.component';
 import { FeesComponent } from './components/fees.component';
 import { Routes } from '@angular/router';
 import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { ProductCardComponent } from './components/product-card.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'products', component: ProductCardComponent },
   {
     path: 'dashboard',
     component: DashboardComponent,

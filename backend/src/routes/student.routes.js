@@ -4,9 +4,15 @@ const studentController = require('../controllers/student.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const roleMiddleware = require('../middlewares/role.middleware');
 
+router.post(
+  '/check-email',
+  authMiddleware,
+  (req, res) => studentController.checkEmailExists(req, res)
+);
+
 router.get(
   '/',
-//   authMiddleware,
+  authMiddleware,
   (req, res) => studentController.getAllStudents(req, res)
 );
 

@@ -7,17 +7,17 @@ class StudentRepository {
     if (filters.classId) query.classId = filters.classId;
 
     return Student.find(query)
-      .populate('userId', 'firstName lastName email')
-      .populate('parentId', 'firstName lastName email')
+      .populate('userId', 'firstName lastName email phone address role')
       .populate('classId', 'name grade')
+      .populate('createdById', 'firstName lastName email')
       .sort({ createdAt: -1 });
   }
 
   async findById(id) {
     return Student.findById(id)
-      .populate('userId', 'firstName lastName email phone')
-      .populate('parentId', 'firstName lastName email phone')
-      .populate('classId');
+      .populate('userId', 'firstName lastName email phone address role')
+      .populate('classId')
+      .populate('createdById', 'firstName lastName email');
   }
 
   async create(studentData) {

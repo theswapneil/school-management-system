@@ -17,6 +17,10 @@ const classSchema = new mongoose.Schema(
     },
     academicYear: String,
     capacity: Number,
+    createdById: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

@@ -20,12 +20,26 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email" type="email" required />
+      <input matInput formControlName="email" type="email" required (blur)="checkEmailExists()" />
       <mat-error *ngIf="studentForm.get('email')?.hasError('required')">
         Email is required
       </mat-error>
       <mat-error *ngIf="studentForm.get('email')?.hasError('email')">
         Invalid email
+      </mat-error>
+      <mat-error *ngIf="studentForm.get('email')?.hasError('emailExists')">
+        Email already exists
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" *ngIf="!isEdit">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" type="password" required />
+      <mat-error *ngIf="studentForm.get('password')?.hasError('required')">
+        Password is required
+      </mat-error>
+      <mat-error *ngIf="studentForm.get('password')?.hasError('minlength')">
+        Password must be at least 6 characters
       </mat-error>
     </mat-form-field>
 
@@ -46,16 +60,9 @@
       <mat-label>Class</mat-label>
       <mat-select formControlName="classId" required>
         <mat-option value="">Select a class</mat-option>
-        <mat-option value="1">Class 1</mat-option>
-        <mat-option value="2">Class 2</mat-option>
-        <mat-option value="3">Class 3</mat-option>
-        <mat-option value="4">Class 4</mat-option>
-        <mat-option value="5">Class 5</mat-option>
-        <mat-option value="6">Class 6</mat-option>
-        <mat-option value="7">Class 7</mat-option>
-        <mat-option value="8">Class 8</mat-option>
-        <mat-option value="9">Class 9</mat-option>
-        <mat-option value="10">Class 10</mat-option>
+        <mat-option *ngFor="let cls of classes()" [value]="cls._id">
+          {{ cls.name }} (Grade {{ cls.grade }})
+        </mat-option>
       </mat-select>
       <mat-error *ngIf="studentForm.get('classId')?.hasError('required')">
         Class is required
@@ -85,7 +92,7 @@
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="studentForm.invalid">
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="false">
     {{ isEdit ? 'Update' : 'Add' }} Student
   </button>
 </mat-dialog-actions>

@@ -65,4 +65,8 @@ export class StudentService {
   deleteStudent(id: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
   }
+
+  checkEmailExists(email: string): Observable<ApiResponse<{ exists: boolean }>> {
+    return this.http.post<ApiResponse<{ exists: boolean }>>(`${this.apiUrl}/check-email`, { email });
+  }
 }
