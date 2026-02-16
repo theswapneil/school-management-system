@@ -72,7 +72,7 @@ docker run -d -p 27017:27017 --name mongodb mongo:latest
 2. Create a free cluster
 3. Get connection string and update `.env`:
 ```
-MONGODB_URI=mongodb+srv://mymongo:mypass@cluster.mongodb.net/school_management?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://mongo_user:mongo_password@cluster_name.wfl8h2y.mongodb.net/db_name?retryWrites=true&w=majority
 ```
 
 ### Initialize Database Collections
